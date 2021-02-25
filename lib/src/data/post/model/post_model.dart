@@ -5,7 +5,7 @@ class Post extends Equatable implements Model {
   final String id;
   final String image;
   final String caption;
-  final String createdAt;
+  final DateTime createdAt;
   final int likes;
   final int comments;
   final bool isLiked;
@@ -27,7 +27,7 @@ class Post extends Equatable implements Model {
     String image,
     String caption,
     String profileImage,
-    String created,
+    DateTime createdAt,
     int likes,
     int comments,
     bool isLiked,
@@ -37,7 +37,7 @@ class Post extends Equatable implements Model {
       id: id ?? this.id,
       image: image ?? this.image,
       caption: caption ?? this.caption,
-      createdAt: created ?? this.createdAt,
+      createdAt: createdAt ?? this.createdAt,
       likes: likes ?? this.likes,
       comments: comments ?? this.comments,
       isLiked: isLiked ?? this.isLiked,
@@ -50,7 +50,7 @@ class Post extends Equatable implements Model {
       '_id': id,
       'image': image,
       'caption': caption,
-      'created_at': createdAt,
+      'created_at': createdAt?.toIso8601String(),
       'likes': likes,
       'comments': comments,
       'isLiked': isLiked,
@@ -65,7 +65,8 @@ class Post extends Equatable implements Model {
       id: map['_id'],
       image: map['image'],
       caption: map['caption'],
-      createdAt: map['created_at'],
+      createdAt:
+          map['created_at'] != null ? DateTime.parse(map['created_at']) : null,
       likes: map['likes'],
       comments: map['comments'],
       isLiked: map['isLiked'],
