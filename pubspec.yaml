@@ -1,0 +1,24 @@
+name: simple_blog
+description: A new Flutter project.
+publish_to: "none"
+version: 1.0.0+1
+
+environment:
+  sdk: ">=2.7.0 <3.0.0"
+
+dependencies:
+  flutter:
+    sdk: flutter
+  cupertino_icons: ^1.0.0
+  dio: ^3.0.10
+  equatable: ^1.2.6
+  flutter_bloc: ^6.1.1
+  flutter_secure_storage: ^3.3.5
+  image_picker: ^0.6.7+21
+
+dev_dependencies:
+  flutter_test:
+    sdk: flutter
+
+flutter:
+  uses-material-design: true
