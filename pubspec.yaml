@@ -11,10 +11,12 @@ dependencies:
     sdk: flutter
   cupertino_icons: ^1.0.0
   dio: ^3.0.10
+  get_it: ^5.0.6
   equatable: ^1.2.6
   flutter_bloc: ^6.1.1
   flutter_secure_storage: ^3.3.5
   image_picker: ^0.6.7+21
+  timeago: ^2.0.30
 
 dev_dependencies:
   flutter_test:
@@ -22,3 +24,5 @@ dev_dependencies:
 
 flutter:
   uses-material-design: true
+  assets:
+    - assets/images/

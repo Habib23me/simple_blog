@@ -24,7 +24,10 @@ class FeedRemoteSource {
 
   Future<Post> create(PostPayload postPayload) async {
     final path = "/posts";
-    final response = await httpAdapter.post<Map>(path);
+    final response = await httpAdapter.post<Map>(
+      path,
+      data: postPayload.toMap(),
+    );
     return Post.fromMap(response);
   }
 }

@@ -63,8 +63,8 @@ class Post extends Equatable implements Model {
 
     return Post(
       id: map['_id'],
-      image: map['image'],
       caption: map['caption'],
+      image: '${ImageUrl.baseImageUrl}${map['image']}',
       createdAt:
           map['created_at'] != null ? DateTime.parse(map['created_at']) : null,
       likes: map['likes'],
