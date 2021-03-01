@@ -8,6 +8,7 @@ class DependencyInjector {
   static Future<void> injectAll() async {
     await _injectLibraries();
     await _injectFeedModule();
+    await _injectCommentModule();
   }
 
   static _injectLibraries() {
@@ -25,6 +26,13 @@ class DependencyInjector {
 
     getIt.registerSingleton(FeedRepository(remoteSource: getIt()));
     getIt.registerFactory(() => FeedBloc(feedRepository: getIt()));
+  }
+
+  static _injectCommentModule() {
+    getIt.registerSingleton(CommentRemoteSource(httpAdapter: getIt()));
+
+    getIt.registerSingleton(CommentRepository(remoteSource: getIt()));
+    getIt.registerFactory(() => CommentBloc(commentRepository: getIt()));
   }
 }
 

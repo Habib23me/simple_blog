@@ -28,9 +28,12 @@ class MainApp extends StatelessWidget {
         routes: {
           CreateBlog.routeName: (context) => CreateBlog(),
           Feed.routeName: (context) => Feed(),
-          Blog.routeName: (context) => Blog()
+          Blog.routeName: (context) => BlocProvider(
+                create: (context) => getIt<CommentBloc>(),
+                child: Blog(),
+              )
         },
-        initialRoute: Blog.routeName,
+        initialRoute: Feed.routeName,
         // home: Splash(),
       ),
     );

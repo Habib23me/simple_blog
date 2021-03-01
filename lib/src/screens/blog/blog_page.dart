@@ -1,101 +1,194 @@
 import 'package:flutter/material.dart';
+import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:simple_blog/simple_blog.dart';
+import 'package:timeago/timeago.dart' as timeago;
 
-class Blog extends StatelessWidget {
-  static String routeName = '/blog';
-  Post post;
-  Blog({@required this.post});
+class Blog extends StatefulWidget {
+  static final String routeName = '/blog';
+
+  @override
+  _BlogState createState() => _BlogState();
+}
+
+class _BlogState extends State<Blog> {
+  final GlobalKey<ScaffoldState> _scaffoldKey = GlobalKey<ScaffoldState>();
+
+  final _formKey = GlobalKey<FormFieldState>();
+
+  bool editing = false;
+
   @override
   Widget build(BuildContext context) {
+    final Post post = ModalRoute.of(context).settings.arguments;
     final _width = MediaQuery.of(context).size.width;
+    void _handleSubmit({bool edit, String id}) {
+      if (_formKey.currentState.validate()) {
+        if (edit != null && edit) {
+          BlocProvider.of<CommentBloc>(context).add(
+            EditComment(id: id, comment: _formKey.currentState.value),
+          );
+        }
+        BlocProvider.of<CommentBloc>(context).add(
+          CreateComment(comment: _formKey.currentState.value, postId: post.id),
+        );
+      }
+    }
+
     return Scaffold(
-        appBar: AppBar(
-          backgroundColor: Theme.of(context).backgroundColor,
-          elevation: 0,
-          leading: BackButton(
-            color: Theme.of(context).accentColor,
-            onPressed: () {
-              Navigator.pop(context);
-            },
-          ),
+      key: _scaffoldKey,
+      appBar: AppBar(
+        backgroundColor: Theme.of(context).backgroundColor,
+        elevation: 0,
+        leading: BackButton(
+          color: Theme.of(context).accentColor,
+          onPressed: () {
+            Navigator.pop(context);
+          },
         ),
-        body: Container(
-          color: Theme.of(context).backgroundColor,
-          child: Stack(alignment: Alignment.bottomCenter, children: [
-            SingleChildScrollView(
-              child: Container(
-                padding: EdgeInsets.only(bottom: 60),
-                child: Column(
-                  children: [
-                    Container(
-                      width: _width,
-                      height: _width * 10 / 16,
-                      child: Image.asset(
-                        'assets/images/logo.png',
-                        fit: BoxFit.fill,
-                      ),
-                    ),
-                    Padding(
-                      padding: const EdgeInsets.symmetric(
-                        vertical: 20.0,
-                        horizontal: 20.0,
-                      ),
-                      child: Text(
-                        'Tempor proident labore excepteur ex labore esse occaecat veniam. Irure anim deserunt nulla fugiat ea Lorem exercitation est labore laboris consequat quis anim. Culpa reprehenderit commodo magna mollit. Aute cillum nostrud consequat consectetur fugiat.Tempor proident labore excepteur ex labore esse occaecat veniam. Irure anim deserunt nulla fugiat ea Lorem exercitation est labore laboris consequat quis anim. Culpa reprehenderit commodo magna mollit. Aute cillum nostrud consequat consectetur fugiat.',
-                        style: TextStyle(
-                          fontSize: 17,
-                          color: Theme.of(context).accentColor,
-                          // decoration: TextDecoration.none,
-                        ),
-                      ),
-                    ),
-                    _Comment(),
-                    _Comment(),
-                    _Comment(),
-                    _Comment(),
-                    _Comment(),
-                    _Comment(),
-                    _Comment(),
-                  ],
+      ),
+      body: BlocListener<CommentBloc, CommentState>(
+        listener: (context, state) {
+          if (state.status == CommentStatus.creatingError) {
+            _scaffoldKey.currentState.showSnackBar(
+              SnackBar(
+                content: Text(
+                  'An error occured saving your comment.Please try again.',
                 ),
               ),
-            ),
-            Positioned(
-              child: Padding(
-                padding: const EdgeInsets.only(left: 8.0),
-                child: Container(
-                  height: 60,
-                  color: Theme.of(context).backgroundColor,
-                  child: Row(
-                    children: [
-                      Expanded(
-                        child: TextField(
-                          textInputAction: TextInputAction.newline,
-                          keyboardType: TextInputType.multiline,
-                          minLines: null,
-                          maxLines:
-                              null, // If this is null, there is no limit to the number of lines, and the text container will start with enough vertical space for one line and automatically grow to accommodate additional lines as they are entered.
-                          expands: true,
-                          decoration: InputDecoration(
-                            // labelText: 'Comment',
-                            hintText: 'Comment',
-                            border: InputBorder.none,
+            );
+          } else if (state.status == CommentStatus.created) {
+            _formKey.currentState.reset();
+          } else if (state.status == CommentStatus.deletingError) {
+            _scaffoldKey.currentState.showSnackBar(
+              SnackBar(
+                content: Text(
+                  'An error occured deleting your comment.Please try again.',
+                ),
+              ),
+            );
+          }
+        },
+        child: Container(
+          color: Theme.of(context).backgroundColor,
+          child: Stack(
+            alignment: Alignment.bottomCenter,
+            children: [
+              Align(
+                alignment: Alignment.topCenter,
+                child: SingleChildScrollView(
+                  child: Container(
+                    padding: EdgeInsets.only(bottom: 60),
+                    child: Column(
+                      mainAxisSize: MainAxisSize.min,
+                      crossAxisAlignment: CrossAxisAlignment.start,
+                      children: [
+                        Container(
+                          width: _width,
+                          height: _width * 10 / 16,
+                          child: Image.network(
+                            '${post.image}',
+                            fit: BoxFit.fill,
                           ),
                         ),
-                      ),
-                      IconButton(
-                          icon: Icon(
-                            Icons.send,
-                            color: Theme.of(context).primaryColor,
+                        Padding(
+                          padding: const EdgeInsets.symmetric(
+                            horizontal: 20.0,
                           ),
-                          onPressed: null)
-                    ],
+                          child: Padding(
+                            padding: const EdgeInsets.only(top: 20.0),
+                            child: Text(
+                              '${post.caption}',
+                              style: TextStyle(
+                                fontSize: 17,
+                                color: Theme.of(context).accentColor,
+                                // decoration: TextDecoration.none,
+                              ),
+                            ),
+                          ),
+                        ),
+                        BlocBuilder<CommentBloc, CommentState>(
+                          builder: (context, state) {
+                            if (state.status == CommentStatus.intial) {
+                              BlocProvider.of<CommentBloc>(context).add(
+                                ReadComments(post.id),
+                              );
+                            } else if (state.status == CommentStatus.loaded ||
+                                state.status == CommentStatus.created) {
+                              return ListView.builder(
+                                shrinkWrap: true,
+                                primary: false,
+                                physics: NeverScrollableScrollPhysics(),
+                                itemCount: state.comments.length,
+                                itemBuilder: (context, index) {
+                                  return _Comment(
+                                    comment: state.comments[index],
+                                  );
+                                },
+                              );
+                            } else if (state.status == CommentStatus.loading ||
+                                state.status == CommentStatus.editingError) {
+                              return Center(
+                                child: CircularProgressIndicator(),
+                              );
+                            }
+                            return Container();
+                          },
+                        )
+                      ],
+                    ),
                   ),
                 ),
               ),
-            ),
-          ]),
-        ));
+              Align(
+                alignment: Alignment.bottomCenter,
+                child: Padding(
+                  padding: const EdgeInsets.only(left: 8.0),
+                  child: Container(
+                    height: 60,
+                    color: Theme.of(context).backgroundColor,
+                    child: Row(
+                      children: [
+                        Expanded(
+                          child: TextFormField(
+                            key: _formKey,
+                            validator: (text) =>
+                                text.isEmpty ? "Comment can't be empty" : null,
+                            textInputAction: TextInputAction.newline,
+                            keyboardType: TextInputType.multiline,
+                            minLines: null,
+                            maxLines:
+                                null, // If this is null, there is no limit to the number of lines, and the text container will start with enough vertical space for one line and automatically grow to accommodate additional lines as they are entered.
+                            expands: true,
+                            decoration: InputDecoration(
+                              // labelText: 'Comment',
+                              hintText: 'Comment',
+                              border: InputBorder.none,
+                            ),
+                          ),
+                        ),
+                        BlocBuilder<CommentBloc, CommentState>(
+                          builder: (context, state) {
+                            return IconButton(
+                                icon: Icon(
+                                  Icons.send,
+                                  color: Theme.of(context).primaryColor,
+                                ),
+                                onPressed:
+                                    state.status == CommentStatus.creating
+                                        ? null
+                                        : _handleSubmit);
+                          },
+                        )
+                      ],
+                    ),
+                  ),
+                ),
+              ),
+            ],
+          ),
+        ),
+      ),
+    );
   }
 }
 
@@ -110,6 +203,7 @@ class _Comment extends StatelessWidget {
         vertical: 10,
       ),
       child: Column(
+        crossAxisAlignment: CrossAxisAlignment.start,
         children: [
           Row(
             children: [
@@ -121,8 +215,8 @@ class _Comment extends StatelessWidget {
                       padding: const EdgeInsets.only(top: 8.0),
                       child: CircleAvatar(
                         radius: 17,
-                        backgroundImage: AssetImage(
-                          'assets/images/logo.png',
+                        backgroundImage: NetworkImage(
+                          '${comment.user.profilePic}',
                         ),
                       ),
                     ),
@@ -142,14 +236,15 @@ class _Comment extends StatelessWidget {
                                       style: DefaultTextStyle.of(context).style,
                                       children: [
                                         TextSpan(
-                                          text: "@username ",
+                                          text: "${comment.user.username}  ",
                                           style: TextStyle(
                                             color: Theme.of(context).hintColor,
                                             fontSize: 14.0,
                                           ),
                                         ),
                                         TextSpan(
-                                          text: 'just now',
+                                          text:
+                                              '${timeago.format(comment.createdAt)}',
                                           style: TextStyle(
                                             fontSize: 14.0,
                                             color: Theme.of(context).hintColor,
@@ -160,14 +255,21 @@ class _Comment extends StatelessWidget {
                                   ),
                                 ),
                                 PopupMenuButton(
-                                  // onSelected: (WhyFarther result) { setState(() { _selection = result; }); },
+                                  onSelected: (value) {
+                                    if (value == 'Edit') {
+                                    } else {
+                                      BlocProvider.of<CommentBloc>(context).add(
+                                        DeleteComment(comment.id),
+                                      );
+                                    }
+                                  },
                                   itemBuilder: (BuildContext context) => [
                                     PopupMenuItem(
-                                      value: 'a',
+                                      value: 'Edit',
                                       child: Text('Edit'),
                                     ),
                                     PopupMenuItem(
-                                      value: 'a',
+                                      value: 'Delete',
                                       child: Text('Delete'),
                                     ),
                                   ],
@@ -186,7 +288,7 @@ class _Comment extends StatelessWidget {
           Padding(
             padding: EdgeInsets.only(top: 2.0),
             child: Text(
-              'Sit eiusmod aliquip nisi id eiusmod nulla. Aliqua amet commodo et ut Lorem velit do. Laborum labore veniam dolore irure ex Lorem. ',
+              '${comment.content}',
               style: TextStyle(
                 fontSize: 16,
                 color: Theme.of(context).accentColor,

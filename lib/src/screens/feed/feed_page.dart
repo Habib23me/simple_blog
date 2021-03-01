@@ -52,14 +52,15 @@ class Feed extends StatelessWidget {
                   width: 40, height: 40, child: CircularProgressIndicator()),
             ),
           );
-        } else if (state.feedStatus == FeedStatus.loaded) {
+        } else if (state.feedStatus == FeedStatus.loaded ||
+            state.feedStatus == FeedStatus.created) {
           return Container(
             color: Theme.of(context).backgroundColor,
             child: state.feed.isEmpty
                 ? RefreshIndicator(
                     onRefresh: () {
                       BlocProvider.of<FeedBloc>(context).add(
-                        ReadFeed(),
+                        ReloadFeed(),
                       );
                       return;
                     },
@@ -164,95 +165,101 @@ class _Blog extends StatelessWidget {
   @override
   Widget build(BuildContext context) {
     final _width = MediaQuery.of(context).size.width;
-    return Column(
-      children: [
-        SizedBox(
-          width: _width,
-          height: _width * 10 / 16,
-          child: Image.network(
-            // 'assets/images/logo.png',
-            '${post.image}',
-            fit: BoxFit.cover,
+    return InkWell(
+      onTap: () {
+        Navigator.pushNamed(
+          context,
+          Blog.routeName,
+          arguments: post,
+        );
+      },
+      child: Column(
+        children: [
+          SizedBox(
+            width: _width,
+            height: _width * 10 / 16,
+            child: Image.network(
+              // 'assets/images/logo.png',
+              '${post.image}',
+              fit: BoxFit.cover,
+            ),
           ),
-        ),
-        Container(
-          padding: EdgeInsets.all(20),
-          child: Column(
-            crossAxisAlignment: CrossAxisAlignment.start,
-            children: [
-              Row(
-                children: [
-                  Flexible(
-                    child: Row(
-                      children: [
-                        CircleAvatar(
-                          radius: 17,
-                          backgroundImage: AssetImage(
-                            'assets/images/logo.png',
+          Container(
+            padding: EdgeInsets.all(20),
+            child: Column(
+              crossAxisAlignment: CrossAxisAlignment.start,
+              children: [
+                Row(
+                  children: [
+                    Flexible(
+                      child: Row(
+                        children: [
+                          CircleAvatar(
+                            radius: 17,
+                            backgroundImage: AssetImage(
+                              'assets/images/logo.png',
+                            ),
                           ),
-                        ),
-                        Padding(
-                          padding: const EdgeInsets.only(left: 8.0),
-                          child: Column(
-                            crossAxisAlignment: CrossAxisAlignment.start,
-                            children: [
-                              Text(
-                                '${post.user.name}',
-                                style: TextStyle(
-                                  fontWeight: FontWeight.w500,
-                                ),
-                              ),
-                              Padding(
-                                padding: EdgeInsets.only(top: 2.0),
-                                child: RichText(
-                                  text: TextSpan(
-                                    style: DefaultTextStyle.of(context).style,
-                                    children: [
-                                      TextSpan(
-                                        text: "@${post.user.username}  ",
-                                        style: TextStyle(
-                                          color: Theme.of(context).hintColor,
-                                          fontSize: 12.0,
-                                        ),
-                                      ),
-                                      TextSpan(
-                                        text:
-                                            '${timeago.format(post.createdAt)}',
-                                        // _date == 'just now'
-                                        //     ? _date
-                                        //     : '$_date ago',
-                                        style: TextStyle(
-                                          fontSize: 12.0,
-                                          color: Theme.of(context).hintColor,
-                                        ),
-                                      ),
-                                    ],
+                          Padding(
+                            padding: const EdgeInsets.only(left: 8.0),
+                            child: Column(
+                              crossAxisAlignment: CrossAxisAlignment.start,
+                              children: [
+                                Text(
+                                  '${post.user.name}',
+                                  style: TextStyle(
+                                    fontWeight: FontWeight.w500,
                                   ),
                                 ),
-                              ),
-                            ],
+                                Padding(
+                                  padding: EdgeInsets.only(top: 2.0),
+                                  child: RichText(
+                                    text: TextSpan(
+                                      style: DefaultTextStyle.of(context).style,
+                                      children: [
+                                        TextSpan(
+                                          text: "@${post.user.username}  ",
+                                          style: TextStyle(
+                                            color: Theme.of(context).hintColor,
+                                            fontSize: 12.0,
+                                          ),
+                                        ),
+                                        TextSpan(
+                                          text:
+                                              '${timeago.format(post.createdAt)}',
+                                          style: TextStyle(
+                                            fontSize: 12.0,
+                                            color: Theme.of(context).hintColor,
+                                          ),
+                                        ),
+                                      ],
+                                    ),
+                                  ),
+                                ),
+                              ],
+                            ),
                           ),
-                        ),
-                      ],
+                        ],
+                      ),
+                    ),
+                  ],
+                ),
+                Padding(
+                  padding: EdgeInsets.only(top: 15),
+                  child: Text(
+                    '${post.caption}',
+                    maxLines: 3,
+                    overflow: TextOverflow.ellipsis,
+                    style: TextStyle(
+                      color: Theme.of(context).accentColor,
                     ),
                   ),
-                ],
-              ),
-              Padding(
-                padding: EdgeInsets.only(top: 15),
-                child: Text(
-                  'Minim deserunt est proident ipsum. Culpa Lorem adipisicing ad nostrud nisi aliqua et. Incididunt ex consectetur ea laborum commodo duis excepteur veniam proident irure in.',
-                  maxLines: 3,
-                  overflow: TextOverflow.ellipsis,
-                  style: TextStyle(
-                    color: Theme.of(context).accentColor,
-                  ),
                 ),
-              ),
-            ],
+              ],
+            ),
           ),
-        ),
-      ],
+        ],
+      ),
     );
   }
 }

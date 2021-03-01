@@ -64,6 +64,8 @@ class _CreateBlogState extends State<CreateBlog> {
               'An error occured saving your blog. Please try again.',
             ),
           ));
+        } else if (state.feedStatus == FeedStatus.created) {
+          Navigator.pop(context);
         }
       },
       child: Scaffold(
