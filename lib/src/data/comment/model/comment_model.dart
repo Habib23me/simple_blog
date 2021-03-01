@@ -5,11 +5,13 @@ import 'package:simple_blog/simple_blog.dart';
 class Comment extends Model {
   final String id;
   final String content;
+  final String postId;
   final DateTime createdAt;
   final User user;
   Comment({
     this.id,
     this.content,
+    this.postId,
     this.createdAt,
     this.user,
   });
@@ -17,12 +19,14 @@ class Comment extends Model {
   Comment copyWith({
     String id,
     String content,
+    String postId,
     DateTime createdAt,
     User user,
   }) {
     return Comment(
       id: id ?? this.id,
       content: content ?? this.content,
+      postId: postId ?? this.postId,
       createdAt: createdAt ?? this.createdAt,
       user: user ?? this.user,
     );
@@ -32,6 +36,7 @@ class Comment extends Model {
     return {
       'id': id,
       'content': content,
+      'postId': postId,
       'createdAt': createdAt?.millisecondsSinceEpoch,
       'user': user?.toMap(),
     };
@@ -41,9 +46,10 @@ class Comment extends Model {
     if (map == null) return null;
 
     return Comment(
-      id: map['id'],
+      id: map['_id'],
       content: map['content'],
-      createdAt: DateTime.fromMillisecondsSinceEpoch(map['createdAt']),
+      postId: map['postId'],
+      createdAt: DateTime.parse(map['created_at']),
       user: User.fromMap(map['user']),
     );
   }
@@ -55,7 +61,7 @@ class Comment extends Model {
 
   @override
   String toString() {
-    return 'Comment(id: $id, content: $content, createdAt: $createdAt, user: $user)';
+    return 'Comment(id: $id, content: $content,postId:$postId, createdAt: $createdAt, user: $user)';
   }
 
   @override
@@ -65,6 +71,7 @@ class Comment extends Model {
     return o is Comment &&
         o.id == id &&
         o.content == content &&
+        o.postId == postId &&
         o.createdAt == createdAt &&
         o.user == user;
   }

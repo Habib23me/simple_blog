@@ -3,7 +3,7 @@ import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:simple_blog/simple_blog.dart';
 import 'package:simple_blog/src/data/user/bloc/user_bloc.dart';
 import 'package:simple_blog/src/dependency_injection/injector.dart';
-
+import 'package:cached_network_image/cached_network_image.dart';
 import 'widget/profile_post.dart';
 
 class Profile extends StatelessWidget {
@@ -99,7 +99,8 @@ class _ProfilePage extends StatelessWidget {
                                   const EdgeInsets.symmetric(vertical: 12.0),
                               child: CircleAvatar(
                                 radius: 50,
-                                backgroundImage: NetworkImage(user.profilePic),
+                                backgroundImage:
+                                    CachedNetworkImageProvider(user.profilePic),
                               ),
                             ),
                             Padding(
@@ -141,6 +142,11 @@ class _ProfilePage extends StatelessWidget {
                           shrinkWrap: true,
                           itemCount: state.posts.length,
                           itemBuilder: (_, int index) {
+                            if (index == state.posts.length - 2) {
+                              BlocProvider.of<UserPostsBloc>(context).add(
+                                ReadNextUserPosts(),
+                              );
+                            }
                             return ProfilePost(post: state.posts[index]);
                           },
                         );

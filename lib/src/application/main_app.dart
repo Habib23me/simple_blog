@@ -39,7 +39,6 @@ class MainApp extends StatelessWidget {
           ),
         ),
         routes: {
-          Blog.routeName: (context) => Blog(),
           Profile.routeName: (context) => Profile(),
         },
 

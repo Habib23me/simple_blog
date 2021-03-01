@@ -40,46 +40,47 @@ class Login extends StatelessWidget {
           key: _scaffoldKey,
           body: Container(
             color: Theme.of(context).backgroundColor,
-            padding: EdgeInsets.symmetric(horizontal: 50),
+            padding: EdgeInsets.only(
+              left: 50,
+              right: 50,
+              top: kToolbarHeight + 50,
+            ),
             child: Column(
               children: [
-                Expanded(
-                  child: Column(
-                    mainAxisAlignment: MainAxisAlignment.center,
-                    crossAxisAlignment: CrossAxisAlignment.center,
-                    children: [
-                      SizedBox(
-                          width: 100,
-                          height: 100,
-                          child: Image.asset('assets/images/logo.png')),
-                      Padding(
-                        padding: const EdgeInsets.only(top: 48.0),
-                        child: RichText(
-                          text: TextSpan(
-                            style: DefaultTextStyle.of(context).style,
-                            children: [
-                              TextSpan(
-                                text: 'Welcome to',
-                                style: TextStyle(
-                                  color: Theme.of(context).hintColor,
-                                  fontSize: 22.0,
-                                  fontWeight: FontWeight.w600,
-                                ),
+                Column(
+                  mainAxisAlignment: MainAxisAlignment.center,
+                  crossAxisAlignment: CrossAxisAlignment.center,
+                  children: [
+                    SizedBox(
+                        width: 100,
+                        height: 100,
+                        child: Image.asset('assets/images/logo.png')),
+                    Padding(
+                      padding: const EdgeInsets.only(top: 48.0),
+                      child: RichText(
+                        text: TextSpan(
+                          children: [
+                            TextSpan(
+                              text: 'Welcome to',
+                              style: TextStyle(
+                                color: Theme.of(context).hintColor,
+                                fontSize: 22.0,
+                                fontWeight: FontWeight.w600,
                               ),
-                              TextSpan(
-                                text: ' Simple Blog',
-                                style: TextStyle(
-                                  fontSize: 22.0,
-                                  color: Theme.of(context).accentColor,
-                                  fontWeight: FontWeight.w600,
-                                ),
+                            ),
+                            TextSpan(
+                              text: ' Simple Blog',
+                              style: TextStyle(
+                                fontSize: 22.0,
+                                color: Theme.of(context).accentColor,
+                                fontWeight: FontWeight.w600,
                               ),
-                            ],
-                          ),
+                            ),
+                          ],
                         ),
                       ),
-                    ],
-                  ),
+                    ),
+                  ],
                 ),
                 Expanded(
                   child: SingleChildScrollView(
@@ -107,7 +108,7 @@ class Login extends StatelessWidget {
                             child: TextFormField(
                               obscureText: true,
                               obscuringCharacter: '*',
-                              validator: Validators.passwordValidator,
+                              validator: Validators.isNotEmpty,
                               keyboardType: TextInputType.visiblePassword,
                               onSaved: (data) => Provider.of<SignInPayload>(
                                 context,

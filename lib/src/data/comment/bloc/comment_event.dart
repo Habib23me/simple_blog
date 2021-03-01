@@ -7,17 +7,36 @@ abstract class CommentEvent extends Equatable {
   List<Object> get props => [];
 }
 
-class ReadComments extends CommentEvent {}
+class ReadComments extends CommentEvent {
+  final String postId;
+  @override
+  List<Object> get props => [postId];
 
-class ReloadComments extends CommentEvent {}
+  ReadComments(this.postId);
+}
 
-class ReadNextComments extends CommentEvent {}
+class ReloadComments extends CommentEvent {
+  final String postId;
+  @override
+  List<Object> get props => [postId];
 
-class CreateCommet extends CommentEvent {
+  ReloadComments(this.postId);
+}
+
+class ReadNextComments extends CommentEvent {
+  final String postId;
+  @override
+  List<Object> get props => [postId];
+
+  ReadNextComments(this.postId);
+}
+
+class CreateComment extends CommentEvent {
   final String comment;
+  final String postId;
   @override
   List<Object> get props => [comment];
-  CreateCommet(this.comment);
+  CreateComment({this.comment, this.postId});
 }
 
 class DeleteComment extends CommentEvent {

@@ -4,7 +4,7 @@ import 'package:bloc/bloc.dart';
 import 'package:equatable/equatable.dart';
 import 'package:simple_blog/simple_blog.dart';
 import 'package:meta/meta.dart';
-         
+
 part 'comment_event.dart';
 part 'comment_state.dart';
 part 'comment_mixin.dart';
@@ -27,18 +27,19 @@ class CommentBloc extends Bloc<CommentEvent, CommentState>
   ) async* {
     if (event is ReadComments) {
       yield* _showLoadingState();
-      yield* _read();
+      yield* _read(postId: event.postId);
     } else if (event is ReloadComments) {
-      yield* _read();
+      yield* _read(postId: event.postId);
     } else if (event is ReadNextComments) {
       if (metaData?.hasNextPage ?? false) {
         yield* _read(
           page: metaData.nextPage,
+          postId: event.postId,
           shouldReload: false,
         );
       }
-    } else if (event is CreateCommet) {
-      yield* _create(event.comment);
+    } else if (event is CreateComment) {
+      yield* _create(event.comment, event.postId);
     } else if (event is EditComment) {
       yield* _edit(event.id, event.comment);
     } else if (event is DeleteComment) {
@@ -46,9 +47,10 @@ class CommentBloc extends Bloc<CommentEvent, CommentState>
     }
   }
 
-  Stream<CommentState> _read({int page, bool shouldReload = true}) async* {
+  Stream<CommentState> _read(
+      {int page, String postId, bool shouldReload = true}) async* {
     try {
-      var comments = await commentRepository.read(page);
+      var comments = await commentRepository.read(page, postId);
       metaData = comments.metaData;
       yield* _showLoadedState(comments.docs, shouldReload: shouldReload);
     } catch (e) {
@@ -56,33 +58,33 @@ class CommentBloc extends Bloc<CommentEvent, CommentState>
     }
   }
 
-  Stream<CommentState> _create(String comment) async* {
+  Stream<CommentState> _create(String comment, String postId) async* {
     try {
-      _showCreatingState();
-      var post = await commentRepository.create(comment);
-      _showCreatedState(post);
+      yield* _showCreatingState();
+      var post = await commentRepository.create(comment, postId);
+      yield* _showCreatedState(post);
     } catch (e) {
-      _showCreatingErrorState();
+      yield* _showCreatingErrorState();
     }
   }
 
   Stream<CommentState> _edit(String id, String comment) async* {
     try {
-      _showEditingState();
+      yield* _showEditingState();
       var post = await commentRepository.edit(id, comment);
-      _showCreatedState(post);
+      yield* _showEditedState(post);
     } catch (e) {
-      _showEditingErrorState();
+      yield* _showEditingErrorState();
     }
   }
 
   Stream<CommentState> _delete(String id) async* {
     try {
-      _showDeletingState();
+      yield* _showDeletingState();
       await commentRepository.delete(id);
-      _showDeletedState(id);
+      yield* _showDeletedState(id);
     } catch (e) {
-      _showDeletingErrorState();
+      yield* _showDeletingErrorState();
     }
   }
 }

@@ -90,11 +90,11 @@ class FeedBloc extends Bloc<FeedEvent, FeedState>
 
   Stream<FeedState> _postToFeed(PostPayload postPayload) async* {
     try {
-      _showCreatingState();
+      yield* _showCreatingState();
       var post = await feedRepository.create(postPayload);
-      _showCreatedState(post);
+      yield* _showCreatedState(post);
     } catch (e) {
-      _showCreatingErrorState();
+      yield* _showCreatingErrorState();
     }
   }
 }

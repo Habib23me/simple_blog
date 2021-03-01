@@ -13,22 +13,23 @@ class DependencyInjector {
     await _injectAccountModule();
     await _injectPostModule();
     await _injectUserModule();
+    await _injectCommentModule();
   }
 
   static _injectLibraries() {
+    getIt.registerSingleton(SecureStorage(storage: FlutterSecureStorage()));
+    getIt.registerSingleton(AccountLocalSource(secureStorage: getIt()));
     getIt.registerSingleton(
       Dio(BaseOptions(baseUrl: "http://192.168.1.2:4000/v1"))
         ..interceptors.addAll(
           _netowrkInterceptors(),
         ),
     );
-    getIt.registerSingleton(SecureStorage(storage: FlutterSecureStorage()));
+
     getIt.registerSingleton(HttpAdapter(getIt()));
   }
 
   static _injectAccountModule() {
-    getIt.registerSingleton(AccountLocalSource(secureStorage: getIt()));
-
     getIt.registerSingleton(AccountRemoteSource(httpAdapter: getIt()));
     getIt.registerSingleton(
         AccountRepository(remoteSource: getIt(), localSource: getIt()));
@@ -50,11 +51,18 @@ class DependencyInjector {
     getIt.registerSingleton(UserRepository(dataSource: getIt()));
     getIt.registerFactory(() => UserBloc(userRepository: getIt()));
   }
+
+  static _injectCommentModule() {
+    getIt.registerSingleton(CommentRemoteSource(httpAdapter: getIt()));
+
+    getIt.registerSingleton(CommentRepository(remoteSource: getIt()));
+    getIt.registerFactory(() => CommentBloc(commentRepository: getIt()));
+  }
 }
 
 Iterable<Interceptor> _netowrkInterceptors() {
   return [
-    // AuthInterceptor(getIt()),
+    AuthInterceptor(accountLocalSource: getIt()),
     FormDataInterceptor(),
     // BaseUrlInterceptor(),
   ];

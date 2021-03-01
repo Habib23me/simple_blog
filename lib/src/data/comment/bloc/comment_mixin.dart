@@ -41,7 +41,7 @@ mixin _CreateStateMixin on Bloc<CommentEvent, CommentState> {
   Stream<CommentState> _showCreatedState(Comment comment) async* {
     yield state.copyWith(
       CommentStatus.created,
-      comments: List.from(state.comments)..add(comment),
+      comments: List.from(state.comments)..insert(0,comment),
     );
   }
 }

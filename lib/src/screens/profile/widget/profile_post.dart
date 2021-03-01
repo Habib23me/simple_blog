@@ -39,7 +39,7 @@ class ProfilePost extends StatelessWidget {
             child: Column(
               children: [
                 Padding(
-                  padding: EdgeInsets.only(top: 15),
+                  padding: EdgeInsets.only(top: 8.0, bottom: 16.0),
                   child: Text(
                     '${post.caption}',
                     maxLines: 3,

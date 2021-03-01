@@ -37,7 +37,7 @@ mixin _CreateMixin on Bloc<FeedEvent, FeedState> {
   @protected
   Stream<FeedState> _showCreatedState(Post post) async* {
     yield state.copyWith(
-      FeedStatus.loaded,
+      FeedStatus.created,
       feed: List.from(state.feed)..insert(0, post),
     );
   }
