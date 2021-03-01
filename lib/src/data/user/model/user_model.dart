@@ -1,4 +1,5 @@
 import 'package:equatable/equatable.dart';
+import 'package:simple_blog/simple_blog.dart';
 
 class User extends Equatable {
   final String id;
@@ -62,7 +63,7 @@ class User extends Equatable {
       id: map['_id'],
       username: map['username'],
       name: map['name'],
-      profilePic: map['profilePic'],
+      profilePic: '${ImageUrl.baseImageUrl}${map['profilePic']}',
       bio: map['bio'],
       posts: map['posts'],
       followers: map['followers'],

@@ -21,14 +21,11 @@ class SignInBloc extends Bloc<SignInEvent, SignInState> with _StateMixin {
     SignInEvent event,
   ) async* {
     try {
-      _showSignInState();
-      await accountRepository.signIn(
-        email: event.email,
-        password: event.password,
-      );
-      _showSignedInState();
+      yield* _showSignInState();
+      await accountRepository.signIn(event.signInPayload);
+      yield* _showSignedInState();
     } on NetworkException catch (e) {
-      _showSigningInErrorState(e.message);
+      yield* _showSigningInErrorState(e.message);
     }
   }
 }

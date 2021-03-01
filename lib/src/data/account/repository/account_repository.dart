@@ -10,27 +10,14 @@ class AccountRepository {
     @required this.localSource,
   });
 
-  Future<void> signUp({
-    String email,
-    String password,
-    String fullName,
-  }) async {
-    String token = await remoteSource.signUp(
-      email: email,
-      password: password,
-      fullName: fullName,
-    );
+  Future<void> signUp(SignUpPayload signUpPayload) async {
+    String token = await remoteSource.signUp(signUpPayload);
+
     return _saveToken(token);
   }
 
-  Future<void> signIn({
-    String email,
-    String password,
-  }) async {
-    String token = await remoteSource.signIn(
-      email: email,
-      password: password,
-    );
+  Future<void> signIn(SignInPayload signInPayload) async {
+    String token = await remoteSource.signIn(signInPayload);
     return _saveToken(token);
   }
 
@@ -38,7 +25,9 @@ class AccountRepository {
     return localSource.write(token);
   }
 
-  Future<void> isSignedIn() async => (await localSource.read()) != null;
+  Future<bool> isSignedIn() async => (await localSource.read()) != null;
 
-  Future<void> signOut() => localSource.delete();
+  Future<void> signOut() async {
+    await localSource.delete();
+  }
 }

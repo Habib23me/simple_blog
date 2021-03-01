@@ -8,20 +8,21 @@ class AccountRemoteSource {
   AccountRemoteSource({@required this.httpAdapter})
       : assert(httpAdapter != null);
 
-  Future<String> signUp({String email, String password, String fullName}) {
-    const path = "/accounts";
-    return httpAdapter.post(path, data: {
-      'email': email,
-      'password': password,
-      'fullName': fullName,
-    });
+  Future<String> signUp(SignUpPayload signUpPayload) async {
+    const path = "/accounts/signup";
+    var response = await httpAdapter.post(
+      path,
+      data: signUpPayload.toMap(),
+    );
+    return response['accessToken'];
   }
 
-  Future<String> signIn({String email, String password}) {
-    const path = "/accounts";
-    return httpAdapter.post(path, data: {
-      'email': email,
-      'password': password,
-    });
+  Future<String> signIn(SignInPayload signInPayload) async {
+    const path = "/accounts/signin";
+    var response = await httpAdapter.post(
+      path,
+      data: signInPayload.toMap(),
+    );
+    return response['accessToken'];
   }
 }

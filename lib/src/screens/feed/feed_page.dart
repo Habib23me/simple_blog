@@ -22,13 +22,8 @@ class Feed extends StatelessWidget {
         elevation: 0,
         actions: [
           IconButton(
-            icon: CircleAvatar(
-              radius: 17,
-              backgroundImage: AssetImage(
-                'assets/images/logo.png',
-              ),
-            ),
-            onPressed: null,
+            icon: Icon(Icons.person),
+            onPressed: () => Navigator.of(context).pushNamed(Profile.routeName),
           ),
         ],
       ),
@@ -86,7 +81,7 @@ class Feed extends StatelessWidget {
                 : RefreshIndicator(
                     onRefresh: () {
                       BlocProvider.of<FeedBloc>(context).add(
-                        ReadFeed(),
+                        ReloadFeed(),
                       );
                       return;
                     },
@@ -109,29 +104,10 @@ class Feed extends StatelessWidget {
           return Container(
             color: Theme.of(context).backgroundColor,
             child: Center(
-              child: Column(
-                mainAxisAlignment: MainAxisAlignment.center,
-                children: [
-                  Text(
-                    'Failed to load feed',
-                    style: TextStyle(
-                      fontSize: 15.0,
-                    ),
-                  ),
-                  Padding(
-                    padding: const EdgeInsets.only(top: 18.0),
-                    child: FlatButton(
-                      color: Theme.of(context).primaryColor,
-                      textColor: Theme.of(context).backgroundColor,
-                      onPressed: () {
-                        BlocProvider.of<FeedBloc>(context).add(
-                          ReadFeed(),
-                        );
-                      },
-                      child: Text('Try again'),
-                    ),
-                  ),
-                ],
+              child: TryAgainButton(
+                onPressed: () => BlocProvider.of<FeedBloc>(context).add(
+                  ReadFeed(),
+                ),
               ),
             ),
           );
@@ -146,13 +122,52 @@ class Feed extends StatelessWidget {
       }),
       floatingActionButton: FloatingActionButton(
         onPressed: () {
-          Navigator.pushNamed(context, CreateBlog.routeName);
+          Navigator.push(
+            context,
+            MaterialPageRoute(
+                builder: (_) => BlocProvider.value(
+                      value: BlocProvider.of<FeedBloc>(context),
+                      child: CreateBlog(),
+                    )),
+          );
         },
         backgroundColor: Theme.of(context).primaryColor,
         child: Icon(
           Icons.add,
         ),
       ),
+    );
+  }
+}
+
+class TryAgainButton extends StatelessWidget {
+  final VoidCallback onPressed;
+  const TryAgainButton({
+    Key key,
+    this.onPressed,
+  }) : super(key: key);
+
+  @override
+  Widget build(BuildContext context) {
+    return Column(
+      mainAxisAlignment: MainAxisAlignment.center,
+      children: [
+        Text(
+          'Failed to load feed',
+          style: TextStyle(
+            fontSize: 15.0,
+          ),
+        ),
+        Padding(
+          padding: const EdgeInsets.only(top: 18.0),
+          child: FlatButton(
+            color: Theme.of(context).primaryColor,
+            textColor: Theme.of(context).backgroundColor,
+            onPressed: onPressed,
+            child: Text('Try again'),
+          ),
+        ),
+      ],
     );
   }
 }
@@ -186,10 +201,8 @@ class _Blog extends StatelessWidget {
                     child: Row(
                       children: [
                         CircleAvatar(
-                          radius: 17,
-                          backgroundImage: AssetImage(
-                            'assets/images/logo.png',
-                          ),
+                          radius: 20,
+                          backgroundImage: NetworkImage("${post.image}"),
                         ),
                         Padding(
                           padding: const EdgeInsets.only(left: 8.0),
@@ -241,7 +254,7 @@ class _Blog extends StatelessWidget {
               Padding(
                 padding: EdgeInsets.only(top: 15),
                 child: Text(
-                  'Minim deserunt est proident ipsum. Culpa Lorem adipisicing ad nostrud nisi aliqua et. Incididunt ex consectetur ea laborum commodo duis excepteur veniam proident irure in.',
+                  '${post.caption}',
                   maxLines: 3,
                   overflow: TextOverflow.ellipsis,
                   style: TextStyle(

@@ -5,3 +5,4 @@ export './blog/blog.dart';
 export './profile/profile.dart';
 export './feed/feed.dart';
 export './create_blog/create_blog.dart';
+export './edit_blog/edit_blog.dart';

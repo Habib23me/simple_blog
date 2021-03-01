@@ -21,15 +21,11 @@ class SignUpBloc extends Bloc<SignUpEvent, SignUpState> with _StateMixin {
     SignUpEvent event,
   ) async* {
     try {
-      _showSigningUpState();
-      await accountRepository.signUp(
-        email: event.email,
-        password: event.password,
-        fullName: event.fullName,
-      );
-      _showSignedUpState();
+      yield* _showSigningUpState();
+      await accountRepository.signUp(event.signUpPayload);
+      yield* _showSignedUpState();
     } on NetworkException catch (e) {
-      _showSigningUpErrorState(e.message);
+      yield* _showSigningUpErrorState(e.message);
     }
   }
 }

@@ -10,7 +10,7 @@ class AccountLocalSource {
 
   Future<String> read() => secureStorage.read(TOKEN_KEY);
 
-  Future<String> write(String value) => secureStorage.write(TOKEN_KEY, value);
+  Future<void> write(String value) => secureStorage.write(TOKEN_KEY, value);
 
-  Future<String> delete() => secureStorage.delete(TOKEN_KEY);
+  Future<void> delete() => secureStorage.delete(TOKEN_KEY);
 }

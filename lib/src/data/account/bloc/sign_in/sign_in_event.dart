@@ -1,17 +1,11 @@
 part of 'sign_in_bloc.dart';
 
 class SignInEvent extends Equatable {
-  final String email;
-  final String password;
-
-  SignInEvent({
-    @required this.email,
-    @required this.password,
-  });
+  final SignInPayload signInPayload;
+  SignInEvent(this.signInPayload);
 
   @override
   List<Object> get props => [
-        email,
-        password,
+        signInPayload,
       ];
 }

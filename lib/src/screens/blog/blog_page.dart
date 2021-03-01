@@ -3,8 +3,6 @@ import 'package:simple_blog/simple_blog.dart';
 
 class Blog extends StatelessWidget {
   static String routeName = '/blog';
-  Post post;
-  Blog({@required this.post});
   @override
   Widget build(BuildContext context) {
     final _width = MediaQuery.of(context).size.width;

@@ -11,7 +11,7 @@ part 'feed_mixins.dart';
 
 class FeedBloc extends Bloc<FeedEvent, FeedState>
     with _ReadMixin, _CreateMixin {
-  final FeedRepository feedRepository;
+  final PostRepository feedRepository;
   PageMetaData metaData;
   FeedBloc({@required this.feedRepository})
       : assert(feedRepository != null),
