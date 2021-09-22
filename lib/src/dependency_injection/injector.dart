@@ -5,6 +5,9 @@ import 'package:pretty_dio_logger/pretty_dio_logger.dart';
 import 'package:simple_blog/simple_blog.dart';
 import 'package:simple_blog/src/data/account/bloc/sign_in/sign_in_bloc.dart';
 import 'package:simple_blog/src/data/account/bloc/sign_up/sign_up_bloc.dart';
+import 'package:simple_blog/src/data/comment/bloc/comment_bloc.dart';
+import 'package:simple_blog/src/data/comment/repository/repository.dart';
+import 'package:simple_blog/src/data/comment/source/source.dart';
 
 final getIt = GetIt.instance;
 
@@ -14,6 +17,7 @@ class DependencyInjector {
     await _injectAccountModule();
     await _injectPostModule();
     await _injectUserModule();
+    await _injectCommentModule();
   }
 
   static _injectLibraries() {
@@ -43,6 +47,12 @@ class DependencyInjector {
     getIt.registerSingleton(PostRepository(remoteSource: getIt()));
     getIt.registerFactory(() => FeedBloc(feedRepository: getIt()));
     getIt.registerFactory(() => UserPostsBloc(feedRepository: getIt()));
+  }
+
+  static _injectCommentModule() {
+    getIt.registerSingleton(CommentRemoteSource(httpAdapter: getIt()));
+    getIt.registerSingleton(CommentRepository(remoteSource: getIt()));
+    getIt.registerFactory(() => CommentBloc(commentRepository: getIt()));
   }
 
   static _injectUserModule() {
