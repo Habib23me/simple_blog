@@ -14,7 +14,6 @@ class DependencyInjector {
     await _injectAccountModule();
     await _injectPostModule();
     await _injectUserModule();
-    await _injectCommentModule();
   }
 
   static _injectLibraries() {
@@ -51,13 +50,6 @@ class DependencyInjector {
 
     getIt.registerSingleton(UserRepository(dataSource: getIt()));
     getIt.registerFactory(() => UserBloc(userRepository: getIt()));
-  }
-
-  static _injectCommentModule() {
-    getIt.registerSingleton(CommentRemoteSource(httpAdapter: getIt()));
-
-    getIt.registerSingleton(CommentRepository(remoteSource: getIt()));
-    getIt.registerFactory(() => CommentBloc(commentRepository: getIt()));
   }
 }
 

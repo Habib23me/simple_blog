@@ -19,15 +19,3 @@ class ToggleLike extends FeedEvent {
 
   ToggleLike(this.id);
 }
-
-class IncrementComment extends FeedEvent {
-  final String id;
-
-  IncrementComment(this.id);
-}
-
-class DecrementComment extends FeedEvent {
-  final String id;
-
-  DecrementComment(this.id);
-}

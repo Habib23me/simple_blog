@@ -190,13 +190,10 @@ class _Blog extends StatelessWidget {
         Navigator.push(
           context,
           MaterialPageRoute(
-            builder: (_) => BlocProvider<CommentBloc>(
-              create: (_) => getIt<CommentBloc>(),
-              child: BlocProvider.value(
-                value: BlocProvider.of<FeedBloc>(context),
-                child: Blog(
-                  post: post,
-                ),
+            builder: (_) => BlocProvider.value(
+              value: BlocProvider.of<FeedBloc>(context),
+              child: Blog(
+                post: post,
               ),
             ),
           ),

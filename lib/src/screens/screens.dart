@@ -6,4 +6,3 @@ export './profile/profile.dart';
 export './feed/feed.dart';
 export './create_blog/create_blog.dart';
 export './edit_blog/edit_blog.dart';
-export './edit_comment/edit_comment.dart';

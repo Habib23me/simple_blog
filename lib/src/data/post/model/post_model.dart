@@ -97,9 +97,3 @@ extension ToggleLikeStatus on Post {
     return _like();
   }
 }
-
-extension CommentCountUpdate on Post {
-  Post incrementComment() => copyWith(comments: comments + 1);
-  Post decrementComment() =>
-      copyWith(comments: comments > 0 ? comments - 1 : 0);
-}

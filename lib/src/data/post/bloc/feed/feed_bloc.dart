@@ -32,10 +32,6 @@ class FeedBloc extends Bloc<FeedEvent, FeedState>
       }
     } else if (event is ToggleLike) {
       yield* _toggleLike(event.id);
-    } else if (event is IncrementComment) {
-      yield* _incrementComment(event.id);
-    } else if (event is DecrementComment) {
-      yield* _decrementComment(event.id);
     } else if (event is PostToFeed) {
       yield* _postToFeed(event.postPayload);
     }
@@ -68,24 +64,6 @@ class FeedBloc extends Bloc<FeedEvent, FeedState>
       var feed = state.feed.findAndReplaceById(id, post.toggleLike());
       yield* _showLoadedState(feed);
     }
-  }
-
-  Stream<FeedState> _incrementComment(String id) async* {
-    var post = state.feed.findById(id);
-    if (post == null) {
-      return;
-    }
-    var feed = state.feed.findAndReplaceById(id, post.incrementComment());
-    yield* _showLoadedState(feed);
-  }
-
-  Stream<FeedState> _decrementComment(String id) async* {
-    var post = state.feed.findById(id);
-    if (post == null) {
-      return;
-    }
-    var feed = state.feed.findAndReplaceById(id, post.incrementComment());
-    yield* _showLoadedState(feed);
   }
 
   Stream<FeedState> _postToFeed(PostPayload postPayload) async* {
