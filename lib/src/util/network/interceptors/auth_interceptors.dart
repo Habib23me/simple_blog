@@ -9,11 +9,11 @@ class AuthInterceptor extends Interceptor {
       : assert(accountLocalSource != null);
 
   @override
-  Future onRequest(RequestOptions options) async {
+  Future onRequest(RequestOptions options, handler) async {
     final authToken = await accountLocalSource.read();
     if (authToken != null) {
       options.headers['Authorization'] = 'Bearer $authToken';
     }
-    return options;
+    return handler.next(options);
   }
 }

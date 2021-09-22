@@ -162,17 +162,18 @@ class HttpAdapter {
 
   NetworkException _dioErrorToNetworkResponse(DioError error) {
     switch (error.type) {
-      case DioErrorType.CONNECT_TIMEOUT:
+      case DioErrorType.connectTimeout:
         return NetworkException.noConnection();
-      case DioErrorType.SEND_TIMEOUT:
+      case DioErrorType.sendTimeout:
         return NetworkException.noConnection();
-      case DioErrorType.RECEIVE_TIMEOUT:
+      case DioErrorType.receiveTimeout:
         return NetworkException.noConnection();
-      case DioErrorType.RESPONSE:
+      case DioErrorType.response:
         return _dioResponseToNetworkException(error.response);
-      case DioErrorType.CANCEL:
+      case DioErrorType.cancel:
         return NetworkException.canceled();
-      case DioErrorType.DEFAULT:
+      default:
+        break;
     }
     return NetworkException.unhandled();
   }
@@ -193,7 +194,7 @@ class HttpAdapter {
     try {
       var response = await request;
       return response.data;
-    } on DioError catch (e) {
+    } catch (e) {
       throw _dioErrorToNetworkResponse(e);
     }
   }

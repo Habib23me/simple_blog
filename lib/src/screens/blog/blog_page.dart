@@ -97,7 +97,7 @@ class _BlogState extends State<Blog> {
                           height: _width * 10 / 16,
                           child: Image.network(
                             '${post.image}',
-                            fit: BoxFit.fill,
+                            fit: BoxFit.cover,
                           ),
                         ),
                         Padding(

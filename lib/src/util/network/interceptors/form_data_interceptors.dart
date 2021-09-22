@@ -4,11 +4,12 @@ class FormDataInterceptor extends Interceptor {
   static const _filePath = 'FilePath:';
 
   @override
-  Future onRequest(RequestOptions options) async {
+  Future onRequest(RequestOptions options, handler) async {
     if (_requestContainsFile(options.data)) {
       final formData = await _convertToFormData(options.data);
       options.data = formData;
     }
+    return handler.next(options);
   }
 
   Future<Map<String, dynamic>> _changeFileRecursively(

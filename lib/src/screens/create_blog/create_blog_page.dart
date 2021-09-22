@@ -128,7 +128,7 @@ class _CreateBlogState extends State<CreateBlog> {
                       ? InkWell(
                           child: Image.file(
                             _image,
-                            fit: BoxFit.fill,
+                            fit: BoxFit.cover,
                           ),
                           onTap: () async {
                             await _pickImage();

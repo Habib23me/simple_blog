@@ -26,6 +26,8 @@ class SignUpBloc extends Bloc<SignUpEvent, SignUpState> with _StateMixin {
       yield* _showSignedUpState();
     } on NetworkException catch (e) {
       yield* _showSigningUpErrorState(e.message);
+    } catch (e) {
+      print(e);
     }
   }
 }
